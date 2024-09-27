@@ -5,13 +5,12 @@ import com.projects.urbancart.models.Category;
 import com.projects.urbancart.models.Product;
 import com.projects.urbancart.repositories.CategoryRepository;
 import com.projects.urbancart.repositories.ProductRepository;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Primary
+//@Primary
 public class SelfProductService implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;

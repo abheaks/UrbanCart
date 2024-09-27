@@ -26,9 +26,18 @@ repositories {
 dependencies {
 //    implementation("org.flywaydb:flyway-core")
 //    implementation("org.flywaydb:flyway-mysql")
-
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.3.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-resource-server
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.3.2")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
+
+
 
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

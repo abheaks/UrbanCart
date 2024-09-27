@@ -4,6 +4,8 @@ import com.projects.urbancart.dtos.FakeProductDto;
 import com.projects.urbancart.exceptions.ProductNotFoundException;
 import com.projects.urbancart.models.Category;
 import com.projects.urbancart.models.Product;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -14,11 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Primary
 public class FakeStoreProductService implements ProductService {
     private final RestTemplate restTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate<String, Object> redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     private Product convertFakeStoreDtoToProduct(FakeProductDto dto) {
@@ -39,10 +44,16 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductById(Long id) throws ProductNotFoundException {
 
+        Product prod = (Product) redisTemplate.opsForHash().get("product", "product-" + id);
+        if (prod != null) {
+            return prod;
+        }
         FakeProductDto fakeProductDto = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeProductDto.class);
         if (fakeProductDto == null) {
             throw new ProductNotFoundException(id, "Product with id " + id + " not found");
         }
+        Product product = convertFakeStoreDtoToProduct(fakeProductDto);
+        redisTemplate.opsForHash().put("product", "product-" + product.getId(), product);
         return convertFakeStoreDtoToProduct(fakeProductDto);
     }
 
